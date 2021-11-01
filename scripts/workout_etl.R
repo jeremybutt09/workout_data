@@ -21,11 +21,8 @@ today <- today() %>%
 #FOLDER THAT CONTAIN WORKOUT DATA IN TEXT FILE FORMAT
 workout_data_folder <- "/Users/jeremybutt/Desktop/Workout_data"
 
-#FOLDER THAT CONTAINS WORKOUT ARCHIVE
-workout_data_archive <- "/Users/jeremybutt/Desktop/Workout_data/archive" 
-
 #OUTPUT FILE WHERE FILE IS SAVED
-output_file <- "/Users/jeremybutt/Desktop/Workout_data/workout_output.csv"
+output_file <- "/Users/jeremybutt/workout_data/data/workout_output.csv"
 
 #LIST OF TEXT FILES IN THE WORKOUT DATA FOLDER.
 #SHOULD FIGURE OUT A WAY TO LIMIT WHAT IS RETURNED. COULD ACCOMPLISH THIS BY LOOKING AT DATABASE/SPREADSHEET.
@@ -62,24 +59,30 @@ workout_titles <- workout_content %>%
                work_titles = .) %>%
         mutate_if(is.character, str_trim))
 
+#EXTRACT EXERCISE NUMBERS FROM NOTES
+workout_number <- workout_content %>%
+  map(~str_extract_all(string = .x,
+                       pattern = "EXERCISE [[:digit:]]{1}\\.?[[:digit:]]?(?=:)") %>%
+        unlist(.) %>%
+        str_trim(.) %>%
+        data.frame() %>%
+        rename(.data = .,
+               exercise_number = .) %>%
+        mutate(exercise_number = str_remove_all(string = exercise_number,
+                                                pattern = "[[:alpha:]]")) %>%
+        mutate_if(is.character, str_trim))
+  
+
 #EXTRACT EXERCISE NAMES FROM NOTES
 workout_exercises <- workout_content %>%
   map(~str_extract_all(string = .x,
-                       pattern = "(?<=EXERCISE [[:digit:]]{1}:[[:space:]]{0,5}).+") %>%
+                       pattern = "(?<=EXERCISE [[:digit:]]{1}\\.?[[:digit:]]?:[[:space:]]{0,5}).+") %>%
         unlist(.) %>%
         str_trim(.) %>%
         data.frame() %>%
         rename(.data = .,
                exercise_name = .) %>%
         mutate_if(is.character, str_trim))
-
-#THIS COULD BE USED TO BUILD A FUNCTION FOR THE NEXT STEP
-#EXTRACT
-max_set <- workout_content %>%
-  map(~str_extract_all(string = .x,
-                       pattern = "(?<=SET )[[:digit:]]+") %>%
-        unlist() %>%
-        max())
 
 #EXTRACT SET DATA FROM WORKOUT CONTENT. THIS CAN BE IMPROVED. NEED TO THINK HOW TO DO IT CORRECTLY BUT LIKELY THROUGH A LOOP
 #FOR NOT ASSUMING NO MORE THAN 5 SETS FOR A SINGLE EXERCISE.
@@ -154,6 +157,7 @@ df_list <- vector(mode = "list",
 for (i in 1:length(workout_titles)) {
   df_list[[i]] <- data.frame(workout_date[[i]], 
                              workout_titles[[i]], 
+                             workout_number[[i]],
                              workout_exercises[[i]], 
                              workout_set1[[i]],
                              workout_set2[[i]],
@@ -183,15 +187,7 @@ write_csv(x = output_data,
           path = output_file,
           append = TRUE)
 
-#MOVE CURRENT WORKOUT DATA TO ARCHIVE WITH DATE SUFFIX
-workout_files %>%
-  basename() %>%
-  str_replace_all(pattern = "current",
-                 replacement = today) %>%
-  paste0(workout_data_archive, "/", .) %>%
-  file.copy(from = workout_files,
-            to = .)
-
+#REMOVING WORKOUT FILES. FILES HAVE BEEN PROCESSED THERE IS NO NEED TO KEEP OVER FILES.
 file.remove(workout_files)
 
 
