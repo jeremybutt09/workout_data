@@ -20,12 +20,13 @@ ui <- fluidPage(
 
 server <- function(input, output, session) {
   wo_data <- function() {
-    wo_data <- read_csv(file = "C:/Users/Jeremy/Documents/workout_data/data/workout_output.csv")
-    ref_data <- read_csv(file = "C:/Users/Jeremy/Documents/workout_data/reference/muscle_ref.csv")
+    setwd("/Users/jeremybutt/workout_data")
+    wo_data <- read_csv(file = "data/workout_output.csv")
+    ref_data <- read_csv(file = "reference/muscle_ref.csv")
     
     wo_data %>%
-      left_join(ref_data, by = c("exercise_name" = "EXERCISE_NAME")) %>%
-      filter(str_detect(string = GENERIC_MUSCLE_GROUP,
+      left_join(ref_data, by = c("exercise_name" = "exercise_name")) %>%
+      filter(str_detect(string = generic_muscle_group,
                         pattern = str_to_upper(input$body_part))) %>%
       top_n(10, weight)
   }
