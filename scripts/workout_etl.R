@@ -180,7 +180,9 @@ output_data <- df_list %>%
                     values_from = value) %>%
         mutate(volume = as.numeric(weight) * as.numeric(reps)) %>%
         mutate_all(as.character)) %>%
-  bind_rows()
+  bind_rows() %>%
+  filter(weight != 0,
+         reps != 0)
 
 #APPEND DATA TO CSV
 write_csv(x = output_data,
