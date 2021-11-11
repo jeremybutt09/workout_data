@@ -75,3 +75,5 @@ ggplot(data = max_rep_weight_graph, aes(x = workout_date, y = pr, color = reps))
   geom_point() +
   facet_wrap(~exercise_name)
 sort(unique(wo_data$exercise_name))
+
+
