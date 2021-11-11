@@ -11,7 +11,7 @@ library(tidyverse)
 library(lubridate)
 
 #OUTPUT FILE WHERE FILE IS SAVED
-wo_data_file <- "/Users/jeremybutt/workout_data/data/workout_output.csv"
+wo_data_file <- "data/workout_output.csv"
 
 wo_data <- read_csv(file = wo_data_file)
 
