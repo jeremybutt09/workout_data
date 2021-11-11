@@ -39,7 +39,8 @@ wo_data <- read_csv(file = "C:/Users/Jeremy/Documents/workout_data/data/workout_
 ref_data <- read_csv(file = "C:/Users/Jeremy/Documents/workout_data/reference/muscle_ref.csv")
 
 pr_long <- wo_data %>%
-  filter(reps != 0) %>%
+  filter(reps != 0,
+         exercise_name == "FLAT BENCH PRESS") %>%
   group_by(exercise_name,
            reps) %>%
   summarize(pr = max(weight)) %>%
@@ -58,6 +59,19 @@ pr_wide <- pr_long %>%
   pivot_wider(names_from = exercise_name,
               values_from = pr_details) %>%
   arrange(reps)
-
-
   
+max_rep_weight_graph <- wo_data %>%
+  filter(reps != 0) %>%
+  group_by(exercise_name,
+           reps,
+           workout_date) %>%
+  summarize(pr = max(weight)) %>%
+  filter(exercise_name %in% c("BACK SQUAT (BARBELL)", "DEADLIFT (BARBELL)", "FLAT BENCH PRESS (BARBELL)", "LAT PULLDOWN (MACHINE)", "STANDING SHOULDER PRESS (BARBELL)")) %>%
+  mutate(reps = as.character(reps))
+
+
+ggplot(data = max_rep_weight_graph, aes(x = workout_date, y = pr, color = reps)) +
+  geom_line() +
+  geom_point() +
+  facet_wrap(~exercise_name)
+sort(unique(wo_data$exercise_name))
