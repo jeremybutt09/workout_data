@@ -57,7 +57,6 @@ server <- function(input, output, session) {
                workout_date) %>%
       summarize(pr = max(weight)) %>%
       filter(exercise_name %in% input$exercise) %>%
-      #mutate(reps = as.character(reps)) %>%
       ggplot(aes(x = workout_date, y = pr, color = as.character(reps))) +
       geom_line() +
       geom_point()
