@@ -34,4 +34,30 @@ ggplot(data = weekly_agg, aes(x = date, y = values, color = agg_description, fil
   #geom_line() +
   geom_col() +
   facet_wrap(~agg_description, scales = "free")
+
+wo_data <- read_csv(file = "C:/Users/Jeremy/Documents/workout_data/data/workout_output.csv")
+ref_data <- read_csv(file = "C:/Users/Jeremy/Documents/workout_data/reference/muscle_ref.csv")
+
+pr_long <- wo_data %>%
+  filter(reps != 0) %>%
+  group_by(exercise_name,
+           reps) %>%
+  summarize(pr = max(weight)) %>%
+  inner_join(wo_data, by = c("exercise_name", "reps")) %>%
+  group_by(exercise_name,
+           reps,
+           pr) %>%
+  summarize(date = max(workout_date))
+
+glimpse(pr_long)
+
+pr_wide <- pr_long %>%
+  transmute(exercise_name,
+            reps,
+            pr_details = paste("PR:", pr, "LBS", "DATE:", date)) %>%
+  pivot_wider(names_from = exercise_name,
+              values_from = pr_details) %>%
+  arrange(reps)
+
+
   
