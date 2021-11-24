@@ -33,7 +33,7 @@ server <- function(input, output, session) {
     setwd("C:/Users/Jeremy/Documents/workout_data")
     wo_data <- read_csv(file = "data/workout_output.csv")
     ref_data <- read_csv(file = "reference/muscle_ref.csv")
-    
+   
     wo_data %>%
       filter(reps != 0,
              exercise_name == input$exercise) %>%
