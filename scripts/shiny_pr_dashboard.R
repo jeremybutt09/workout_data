@@ -29,11 +29,14 @@ ui <- fluidPage(
 
 server <- function(input, output, session) {
   
+  setwd("C:/Users/Jeremy/Documents/workout_data")  
+  wo_data <- read_csv(file = "data/workout_output.csv") %>%
+    mutate(reps_factor = factor(x = as.character(reps),
+                                levels = c(1:20)))
+  ref_data <- read_csv(file = "reference/muscle_ref.csv")
+    
   pr_reps_data <- function() {
-    setwd("C:/Users/Jeremy/Documents/workout_data")
-    wo_data <- read_csv(file = "data/workout_output.csv")
-    ref_data <- read_csv(file = "reference/muscle_ref.csv")
-   
+
     wo_data %>%
       filter(reps != 0,
              exercise_name == input$exercise) %>%
@@ -47,24 +50,21 @@ server <- function(input, output, session) {
       summarize(date = max(workout_date)) %>%
       transmute(exercise_name,
                 reps,
-                pr_details = paste("PR:", pr, "LBS", "DATE:", date)) %>%
-      pivot_wider(names_from = exercise_name,
-                  values_from = pr_details) %>%
+                pr,
+                date) %>%
       arrange(reps)
   }
   
   pr_reps_trends <- function() {
-    setwd("C:/Users/Jeremy/Documents/workout_data")
-    wo_data <- read_csv(file = "data/workout_output.csv")
     
     wo_data %>%
       filter(reps != 0) %>%
       group_by(exercise_name,
-               reps,
+               reps_factor,
                workout_date) %>%
       summarize(pr = max(weight)) %>%
       filter(exercise_name %in% input$exercise) %>%
-      ggplot(aes(x = workout_date, y = pr, color = as.character(reps))) +
+      ggplot(aes(x = workout_date, y = pr, color = reps_factor)) +
       geom_line() +
       geom_point()
     
@@ -87,22 +87,22 @@ server <- function(input, output, session) {
       transmute(exercise_name,
                 set,
                 reps,
-                pr_details = paste("PR:", pr, "LBS", "DATE:", date)) %>%
-      pivot_wider(names_from = exercise_name,
-                  values_from = pr_details) %>%
-      arrange(reps)
+                pr_lbs = pr,
+                date) %>%
+      arrange(set,
+              reps)
   }
   
   pr_sets_trends <- function() {
     wo_data %>%
-      filter(reps != 0,
+      filter(reps_factor != 0,
              exercise_name %in% input$exercise) %>%
       group_by(exercise_name,
                set,
-               reps,
+               reps_factor,
                workout_date) %>%
       summarize(pr = max(weight)) %>%
-      ggplot(aes(x = workout_date, y = pr, color = as.character(reps))) +
+      ggplot(aes(x = workout_date, y = pr, color = reps_factor)) +
       geom_line() +
       geom_point() +
       facet_wrap(~as.character(set))
@@ -117,7 +117,7 @@ server <- function(input, output, session) {
   })
   
   output$pr_set_data <- DT::renderDT({
-    DT:datatable(pr_sets_data())
+    DT::datatable(pr_sets_data())
   })
   
   output$plot_pr_set_trends <- plotly::renderPlotly({
