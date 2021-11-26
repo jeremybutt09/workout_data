@@ -12,6 +12,11 @@ ui <- fluidPage(
                   label = "Choose an Exercise",
                   selected = "BACK SQUAT",
                   choices = c("BACK SQUAT (BARBELL)", "DEADLIFT (BARBELL)", "FLAT BENCH PRESS (BARBELL)", "LAT PULLDOWN (MACHINE)", "STANDING SHOULDER PRESS (BARBELL)"),
+                  multiple = FALSE),
+      selectInput(inputId = "gen_muscle_group",
+                  label = "Choose a Muscle Group",
+                  selected = "LEGS",
+                  choices = c("BACK", "CHEST", "LEGS", "SHOULDERS", "ARMS", "FULL BODY"),
                   multiple = FALSE)
     ),
     mainPanel(
@@ -21,7 +26,9 @@ ui <- fluidPage(
                  plotly::plotlyOutput("plot_pr_reps_trends")),
         tabPanel('PR Sets',
                  DT::DTOutput("pr_set_data"),
-                 plotly::plotlyOutput("plot_pr_set_trends"))
+                 plotly::plotlyOutput("plot_pr_set_trends")),
+        tabPanel('Volume',
+                 plotly::plotlyOutput("plot_volume"))
       )
     )
   )
@@ -66,7 +73,9 @@ server <- function(input, output, session) {
       filter(exercise_name %in% input$exercise) %>%
       ggplot(aes(x = workout_date, y = pr, color = reps_factor)) +
       geom_line() +
-      geom_point()
+      geom_point() +
+      theme(axis.title.x = element_blank()) +
+      ylab("LBS")
     
   }
   
@@ -105,7 +114,24 @@ server <- function(input, output, session) {
       ggplot(aes(x = workout_date, y = pr, color = reps_factor)) +
       geom_line() +
       geom_point() +
-      facet_wrap(~as.character(set))
+      facet_wrap(~as.character(set)) +
+      theme(axis.title.x = element_blank()) +
+      ylab("LBS")
+  }
+  
+  volume_trends <- function() {
+    wo_data %>%
+      left_join(ref_data, by = "exercise_name") %>%
+      filter(generic_muscle_group == input$gen_muscle_group) %>%
+      mutate(workout_week = floor_date(workout_date, "week")) %>%
+      group_by(workout_week,
+               generic_muscle_group) %>%
+      summarise(volume = sum(volume)) %>%
+      ggplot(aes(x = workout_week, y = volume)) +
+      geom_col(fill = "skyblue3") +
+      theme(legend.position = "none",
+            axis.title.x = element_blank())  +
+      ylab("LBS")
   }
   
   output$pr_rep_data <- DT::renderDT({
@@ -122,6 +148,10 @@ server <- function(input, output, session) {
   
   output$plot_pr_set_trends <- plotly::renderPlotly({
     pr_sets_trends()
+  })
+  
+  output$plot_volume <- plotly::renderPlotly({
+    volume_trends()
   })
 }
 
