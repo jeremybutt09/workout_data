@@ -7,29 +7,36 @@ library(lubridate)
 
 ui <- fluidPage(
   titlePanel("Workout Data Analysis"),
+  theme = shinythemes::shinytheme('superhero'),
   sidebarLayout(
     sidebarPanel(
-      selectInput(inputId = "exercise",
-                  label = "Choose an Exercise",
-                  selected = "BACK SQUAT",
-                  choices = c("BACK SQUAT (BARBELL)", "DEADLIFT (BARBELL)", "FLAT BENCH PRESS (BARBELL)", "LAT PULLDOWN (MACHINE)", "STANDING SHOULDER PRESS (BARBELL)"),
-                  multiple = FALSE),
-      selectInput(inputId = "gen_muscle_group",
-                  label = "Choose a Muscle Group",
-                  selected = "LEGS",
-                  choices = c("BACK", "CHEST", "LEGS", "SHOULDERS", "ARMS", "FULL BODY"),
-                  multiple = FALSE)
+      conditionalPanel(condition = "input.tabselected==1|input.tabselected==2",
+        selectInput(inputId = "exercise",
+                    label = "Choose an Exercise",
+                    selected = "BACK SQUAT",
+                    choices = c("BACK SQUAT (BARBELL)", "DEADLIFT (BARBELL)", "FLAT BENCH PRESS (BARBELL)", "LAT PULLDOWN (MACHINE)", "STANDING SHOULDER PRESS (BARBELL)"),
+                    multiple = FALSE)),
+      conditionalPanel(condition = "input.tabselected==3",
+        selectInput(inputId = "gen_muscle_group",
+                    label = "Choose a Muscle Group",
+                    selected = "LEGS",
+                    choices = c("BACK", "CHEST", "LEGS", "SHOULDERS", "ARMS", "FULL BODY"),
+                    multiple = FALSE))
     ),
     mainPanel(
       tabsetPanel(
         tabPanel('PR Reps',
+                 value = 1,
                  DT::DTOutput("pr_rep_data"),
                  plotly::plotlyOutput("plot_pr_reps_trends")),
         tabPanel('PR Sets',
+                 value = 2,
                  DT::DTOutput("pr_set_data"),
                  plotly::plotlyOutput("plot_pr_set_trends")),
         tabPanel('Volume',
-                 plotly::plotlyOutput("plot_volume"))
+                 value = 3,
+                 plotly::plotlyOutput("plot_volume")),
+        id = "tabselected"
       )
     )
   )
