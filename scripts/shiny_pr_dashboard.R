@@ -7,7 +7,8 @@ library(lubridate)
 
 ui <- fluidPage(
   titlePanel("Workout Data Analysis"),
-  theme = shinythemes::shinytheme('superhero'),
+  theme = shinythemes::shinytheme('flatly'),
+  #shinythemes::themeSelector(),
   sidebarLayout(
     sidebarPanel(
       conditionalPanel(condition = "input.tabselected==1|input.tabselected==2",
@@ -49,6 +50,8 @@ server <- function(input, output, session) {
     mutate(reps_factor = factor(x = as.character(reps),
                                 levels = c(1:20)))
   ref_data <- read_csv(file = "reference/muscle_ref.csv")
+  
+  coeff <- 0.01
     
   pr_reps_data <- function() {
 
@@ -82,6 +85,7 @@ server <- function(input, output, session) {
       ggplot(aes(x = workout_date, y = pr, color = reps_factor)) +
       geom_line() +
       geom_point() +
+      labs(color = "Reps") +
       theme(axis.title.x = element_blank()) +
       ylab("LBS")
     
@@ -123,6 +127,7 @@ server <- function(input, output, session) {
       geom_line() +
       geom_point() +
       facet_wrap(~as.character(set)) +
+      labs(color = "Reps") +
       theme(axis.title.x = element_blank()) +
       ylab("LBS")
   }
@@ -134,12 +139,16 @@ server <- function(input, output, session) {
       mutate(workout_week = floor_date(workout_date, "week")) %>%
       group_by(workout_week,
                generic_muscle_group) %>%
-      summarise(volume = sum(volume)) %>%
-      ggplot(aes(x = workout_week, y = volume)) +
-      geom_col(fill = "skyblue3") +
+      summarise(reps = sum(reps),
+                volume = sum(volume)) %>%
+      ggplot(aes(x = workout_week)) +
+      geom_col(aes(y = volume), fill = "skyblue3") +
+      geom_line(aes(y = reps/coeff), size = 1, color = "springgreen4") +
+      scale_y_continuous(name = "Lbs",
+                         sec.axis = sec_axis(~.*coeff, name = "Number of Reps")) + 
       theme(legend.position = "none",
-            axis.title.x = element_blank())  +
-      ylab("LBS")
+            axis.title.x = element_blank()) +
+      labs(title = "Workout Volume and Reps")
   }
   
   output$pr_rep_data <- DT::renderDT({
