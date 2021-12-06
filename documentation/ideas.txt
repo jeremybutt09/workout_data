@@ -1,0 +1,8 @@
+Ideas for dashboard and analysis
+1) As an athelete I want to know my Rep PR for each Rep for each exercise and the date I acheived the PR so that I can know what my rep PRs are
+2) As an athelete I want to visualize how my rep PR has changed over time for each rep and exercise
+3) As an athelete I want to know the max weight I lifted for each set of a given exercise so that I can see progress
+4) As an athelete I want to visualize trends in max weight lifted by set so that I can monitor progress
+5) As an athelete I want to be able to visualize trends in volume by muscle group over time so that I can monitor progress
+6) As an athelete I want to know by predicted 1 RM based appropriate 1RM calculations
+7) As an athelete I want to know by lifted weight to body weight ratio so that I can know my strength to body mass ratio
