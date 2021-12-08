@@ -1,12 +1,15 @@
 library(tidyverse)
 library(lubridate)
 
-setwd("C:/Users/Jeremy/Documents/workout_data")  
-wo_data <- read_csv(file = "data/workout_output.csv") %>%
+wo_data_url <- "https://raw.githubusercontent.com/jeremybutt09/workout_data/main/data/workout_output.csv?token=APGQAGG2RAZROH3FDISQHQTBWA6YM"
+ref_data_url <-"https://raw.githubusercontent.com/jeremybutt09/workout_data/main/Reference/muscle_ref.csv?token=APGQAGFTTTBIZYTYZB22GMDBWA7DG"
+rm_pred_url <- "https://raw.githubusercontent.com/jeremybutt09/workout_data/main/Reference/1_RM_PREDICTION.csv?token=APGQAGFPHUINFGHHQ6QFVALBWA7GA"
+
+wo_data <- read_csv(file = wo_data_url) %>%
   mutate(reps_factor = factor(x = as.character(reps),
                               levels = c(1:20)))
-ref_data <- read_csv(file = "reference/muscle_ref.csv")
-rm_pred <- read_csv(file = "reference/1_RM_prediction.csv")
+ref_data <- read_csv(file = ref_data_url)
+rm_pred <- read_csv(file = rm_pred_url)
 
 exercises <- c("BACK SQUAT (BARBELL)",
                "DEADLIFT (BARBELL)",
