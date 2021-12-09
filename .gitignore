@@ -2,3 +2,7 @@
 .Rhistory
 .RData
 .Ruserdata
+<<<<<<< HEAD
+packrat/lib*/
+=======
+>>>>>>> 63d4ee248dee6f89f19bd669ffa2f2afab261084
