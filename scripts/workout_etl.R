@@ -88,7 +88,7 @@ workout_exercises <- workout_content %>%
 #FOR NOT ASSUMING NO MORE THAN 5 SETS FOR A SINGLE EXERCISE.
 workout_set1 <- workout_content %>%
   map(~str_extract_all(string = .x,
-                       pattern = "(?<=SET 1:[^[:alnum:]]{0,5})[[:digit:]]{1,3}[[:space:]]{0,5}X[[:space:]]{0,5}[[:digit:]]{1,3}") %>%
+                       pattern = "(?<=SET 1:[^[:alnum:]]{0,5})[[:digit:]]{1,3}\\.?[[:digit:]]{1,2}[[:space:]]{0,5}X[[:space:]]{0,5}[[:digit:]]{1,3}") %>%
         unlist(.) %>%
         str_trim(.) %>%
         data.frame() %>%
@@ -101,7 +101,7 @@ workout_set1 <- workout_content %>%
 
 workout_set2 <- workout_content %>%
   map(~str_extract_all(string = .x,
-                       pattern = "(?<=SET 2:[^[:alnum:]]{0,5})[[:digit:]]{1,3}[[:space:]]{0,5}X[[:space:]]{0,5}[[:digit:]]{1,3}") %>%
+                       pattern = "(?<=SET 2:[^[:alnum:]]{0,5})[[:digit:]]{1,3}\\.?[[:digit:]]{1,2}[[:space:]]{0,5}X[[:space:]]{0,5}[[:digit:]]{1,3}") %>%
         unlist(.) %>%
         str_trim(.) %>%
         data.frame() %>%
@@ -114,7 +114,7 @@ workout_set2 <- workout_content %>%
 
 workout_set3 <- workout_content %>%
   map(~str_extract_all(string = .x,
-                       pattern = "(?<=SET 3:[^[:alnum:]]{0,5})[[:digit:]]{1,3}[[:space:]]{0,5}X[[:space:]]{0,5}[[:digit:]]{1,3}") %>%
+                       pattern = "(?<=SET 3:[^[:alnum:]]{0,5})[[:digit:]]{1,3}\\.?[[:digit:]]{1,2}[[:space:]]{0,5}X[[:space:]]{0,5}[[:digit:]]{1,3}") %>%
         unlist(.) %>%
         str_trim(.) %>%
         data.frame() %>%
@@ -127,7 +127,7 @@ workout_set3 <- workout_content %>%
 
 workout_set4 <- workout_content %>%
   map(~str_extract_all(string = .x,
-                       pattern = "(?<=SET 4:[^[:alnum:]]{0,5})[[:digit:]]{1,3}[[:space:]]{0,5}X[[:space:]]{0,5}[[:digit:]]{1,3}") %>%
+                       pattern = "(?<=SET 4:[^[:alnum:]]{0,5})[[:digit:]]{1,3}\\.?[[:digit:]]{1,2}[[:space:]]{0,5}X[[:space:]]{0,5}[[:digit:]]{1,3}") %>%
         unlist(.) %>%
         str_trim(.) %>%
         data.frame() %>%
@@ -140,7 +140,7 @@ workout_set4 <- workout_content %>%
 
 workout_set5 <- workout_content %>%
   map(~str_extract_all(string = .x,
-                       pattern = "(?<=SET 5:[^[:alnum:]]{0,5})[[:digit:]]{1,3}[[:space:]]{0,5}X[[:space:]]{0,5}[[:digit:]]{1,3}") %>%
+                       pattern = "(?<=SET 5:[^[:alnum:]]{0,5})[[:digit:]]{1,3}\\.?[[:digit:]]{1,2}[[:space:]]{0,5}X[[:space:]]{0,5}[[:digit:]]{1,3}") %>%
         unlist(.) %>%
         str_trim(.) %>%
         data.frame() %>%
