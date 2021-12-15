@@ -1,9 +1,9 @@
 library(tidyverse)
 library(lubridate)
 
-wo_data_url <- "https://raw.githubusercontent.com/jeremybutt09/workout_data/main/data/workout_output.csv?token=APGQAGG2RAZROH3FDISQHQTBWA6YM"
-ref_data_url <-"https://raw.githubusercontent.com/jeremybutt09/workout_data/main/Reference/muscle_ref.csv?token=APGQAGFTTTBIZYTYZB22GMDBWA7DG"
-rm_pred_url <- "https://raw.githubusercontent.com/jeremybutt09/workout_data/main/Reference/1_RM_PREDICTION.csv?token=APGQAGFPHUINFGHHQ6QFVALBWA7GA"
+wo_data_url <- "C:/Users/Jeremy/Documents/workout_data/data/workout_output.csv"
+ref_data_url <- "C:/Users/Jeremy/Documents/workout_data/reference/muscle_ref.csv"
+rm_pred_url <- "C:/Users/Jeremy/Documents/workout_data/reference/1_RM_PREDICTION.csv"
 
 wo_data <- read_csv(file = wo_data_url) %>%
   mutate(reps_factor = factor(x = as.character(reps),
