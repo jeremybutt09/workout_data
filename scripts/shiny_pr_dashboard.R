@@ -45,7 +45,7 @@ ui <- fluidPage(
 
 server <- function(input, output, session) {
   
-  setwd("C:/Users/Jeremy/Documents/workout_data")  
+  setwd("C:/Users/Jeremy/Documents/workout_data")
   wo_data <- read_csv(file = "data/workout_output.csv") %>%
     mutate(reps_factor = factor(x = as.character(reps),
                                 levels = c(1:20)))
