@@ -113,6 +113,15 @@ set_data <- workout_content %>%
 set_data_df <- bind_cols(set_number, set_data) %>%
   split(f = .$set_number)
 
+#NOT WORKING BECAUSE ONLY A SINGLE ROW FOR SET 4 BUT 2 EXERCISES. CODE CREATES A NEW ROW FOR SET 4 WHICH IS NOT CORRECT
+test <- set_data_df %>%
+  map(~bind_cols(.x, workout_exercises))
+
+#IDEA: CAN LOOK TO REPLICATE THE OTHER VECTORS TO THE NUMBER OF SETS IN THE set_data_df AND THEN BIND ROWS
+#CAN ALSO LOOK TO UPDATE VALUES IN DATAFRAME ON EVERY nth OCCURENCE OF SET 1.
+
+test
+
 df_list <- vector(mode = "list",
                   length = length(workout_titles))
 
