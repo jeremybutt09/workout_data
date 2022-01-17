@@ -30,6 +30,9 @@ workout_files <- list.files(workout_data_folder,
                             full.names = TRUE,
                             pattern = "_current")
 
+#FOR DEV WILL REMOVE PRIOR TO MERGING
+workout_files <- "C:/Users/Jeremy/Documents/workout_data/data/set_extract_dev.txt"
+
 #READING THE FILES INTO R. AGAIN SHOULD LIKE WHAT IS BEING BROUGHT IN
 workout_content <- lapply(X = workout_files,
                           FUN = read_file) %>%
