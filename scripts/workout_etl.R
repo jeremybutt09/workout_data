@@ -87,13 +87,31 @@ workout_exercises <- workout_content %>%
                exercise_name = .) %>%
         mutate_if(is.character, str_trim))
 
+#EXTRACT SET NUMBERS FROM NOTES
 set_number <- workout_content %>%
   map(~str_extract_all(string = .x,
-                       pattern = "SET [[:digit:]]{1,2}"))
+                       pattern = "SET [[:digit:]]{1,2}") %>%
+        unlist(.) %>%
+        str_trim(.) %>%
+        data.frame() %>%
+        rename(.data = .,
+               set_number = .) %>%
+        mutate_if(is.character, str_trim))
 
+#EXTRACT SET DATA (WEIGHT ANDS REPS) FROM NOTES
 set_data <- workout_content %>%
   map(~str_extract_all(string = .x,
-                       pattern = "(?<=SET [[:digit:]]{1,2}:[^[:alnum:]]{0,5})[[:digit:]]{1,3}\\.?[[:digit:]]{1,2}[[:space:]]{0,5}X[[:space:]]{0,5}[[:digit:]]{1,3}"))
+                       pattern = "(?<=SET [[:digit:]]{1,2}:[^[:alnum:]]{0,5})[[:digit:]]{1,3}\\.?[[:digit:]]{1,2}[[:space:]]{0,5}X[[:space:]]{0,5}[[:digit:]]{1,3}") %>%
+        unlist(.) %>%
+        str_trim(.) %>%
+        data.frame() %>%
+        rename(.data = .,
+               set_data = .) %>%
+        mutate_if(is.character, str_trim))
+
+bind_cols(set_number, set_data)
+str(bind_cols(set_number, set_data))
+glimpse(bind_cols(set_number, set_data))
 
 #EXTRACT SET DATA FROM WORKOUT CONTENT. THIS CAN BE IMPROVED. NEED TO THINK HOW TO DO IT CORRECTLY BUT LIKELY THROUGH A LOOP
 #FOR NOT ASSUMING NO MORE THAN 5 SETS FOR A SINGLE EXERCISE.
