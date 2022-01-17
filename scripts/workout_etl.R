@@ -91,6 +91,9 @@ set_number <- workout_content %>%
   map(~str_extract_all(string = .x,
                        pattern = "SET [[:digit:]]{1,2}"))
 
+set_data <- workout_content %>%
+  map(~str_extract_all(string = .x,
+                       pattern = "(?<=SET [[:digit:]]{1,2}:[^[:alnum:]]{0,5})[[:digit:]]{1,3}\\.?[[:digit:]]{1,2}[[:space:]]{0,5}X[[:space:]]{0,5}[[:digit:]]{1,3}"))
 
 #EXTRACT SET DATA FROM WORKOUT CONTENT. THIS CAN BE IMPROVED. NEED TO THINK HOW TO DO IT CORRECTLY BUT LIKELY THROUGH A LOOP
 #FOR NOT ASSUMING NO MORE THAN 5 SETS FOR A SINGLE EXERCISE.
@@ -104,58 +107,6 @@ workout_set1 <- workout_content %>%
                set1_data = .) %>%
         separate(col = set1_data,
                  into = c("set_1_weight", "set_1_reps"),
-                 sep = "X") %>%
-        mutate_if(is.character, str_trim))
-
-workout_set2 <- workout_content %>%
-  map(~str_extract_all(string = .x,
-                       pattern = "(?<=SET 2:[^[:alnum:]]{0,5})[[:digit:]]{1,3}\\.?[[:digit:]]{1,2}[[:space:]]{0,5}X[[:space:]]{0,5}[[:digit:]]{1,3}") %>%
-        unlist(.) %>%
-        str_trim(.) %>%
-        data.frame() %>%
-        rename(.data = .,
-               set_data = .) %>%
-        separate(col = set_data,
-                 into = c("set_2_weight", "set_2_reps"),
-                 sep = "X") %>%
-        mutate_if(is.character, str_trim))
-
-workout_set3 <- workout_content %>%
-  map(~str_extract_all(string = .x,
-                       pattern = "(?<=SET 3:[^[:alnum:]]{0,5})[[:digit:]]{1,3}\\.?[[:digit:]]{1,2}[[:space:]]{0,5}X[[:space:]]{0,5}[[:digit:]]{1,3}") %>%
-        unlist(.) %>%
-        str_trim(.) %>%
-        data.frame() %>%
-        rename(.data = .,
-               set_data = .) %>%
-        separate(col = set_data,
-                 into = c("set_3_weight", "set_3_reps"),
-                 sep = "X") %>%
-        mutate_if(is.character, str_trim))
-
-workout_set4 <- workout_content %>%
-  map(~str_extract_all(string = .x,
-                       pattern = "(?<=SET 4:[^[:alnum:]]{0,5})[[:digit:]]{1,3}\\.?[[:digit:]]{1,2}[[:space:]]{0,5}X[[:space:]]{0,5}[[:digit:]]{1,3}") %>%
-        unlist(.) %>%
-        str_trim(.) %>%
-        data.frame() %>%
-        rename(.data = .,
-               set_data = .) %>%
-        separate(col = set_data,
-                 into = c("set_4_weight", "set_4_reps"),
-                 sep = "X") %>%
-        mutate_if(is.character, str_trim))
-
-workout_set5 <- workout_content %>%
-  map(~str_extract_all(string = .x,
-                       pattern = "(?<=SET 5:[^[:alnum:]]{0,5})[[:digit:]]{1,3}\\.?[[:digit:]]{1,2}[[:space:]]{0,5}X[[:space:]]{0,5}[[:digit:]]{1,3}") %>%
-        unlist(.) %>%
-        str_trim(.) %>%
-        data.frame() %>%
-        rename(.data = .,
-               set_data = .) %>%
-        separate(col = set_data,
-                 into = c("set_5_weight", "set_5_reps"),
                  sep = "X") %>%
         mutate_if(is.character, str_trim))
 
