@@ -87,6 +87,11 @@ workout_exercises <- workout_content %>%
                exercise_name = .) %>%
         mutate_if(is.character, str_trim))
 
+set_number <- workout_content %>%
+  map(~str_extract_all(string = .x,
+                       pattern = "SET [[:digit:]]{1,2}"))
+
+
 #EXTRACT SET DATA FROM WORKOUT CONTENT. THIS CAN BE IMPROVED. NEED TO THINK HOW TO DO IT CORRECTLY BUT LIKELY THROUGH A LOOP
 #FOR NOT ASSUMING NO MORE THAN 5 SETS FOR A SINGLE EXERCISE.
 workout_set1 <- workout_content %>%
