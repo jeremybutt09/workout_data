@@ -109,24 +109,9 @@ set_data <- workout_content %>%
                set_data = .) %>%
         mutate_if(is.character, str_trim))
 
-bind_cols(set_number, set_data)
-str(bind_cols(set_number, set_data))
-glimpse(bind_cols(set_number, set_data))
 
-#EXTRACT SET DATA FROM WORKOUT CONTENT. THIS CAN BE IMPROVED. NEED TO THINK HOW TO DO IT CORRECTLY BUT LIKELY THROUGH A LOOP
-#FOR NOT ASSUMING NO MORE THAN 5 SETS FOR A SINGLE EXERCISE.
-workout_set1 <- workout_content %>%
-  map(~str_extract_all(string = .x,
-                       pattern = "(?<=SET 1:[^[:alnum:]]{0,5})[[:digit:]]{1,3}\\.?[[:digit:]]{1,2}[[:space:]]{0,5}X[[:space:]]{0,5}[[:digit:]]{1,3}") %>%
-        unlist(.) %>%
-        str_trim(.) %>%
-        data.frame() %>%
-        rename(.data = .,
-               set1_data = .) %>%
-        separate(col = set1_data,
-                 into = c("set_1_weight", "set_1_reps"),
-                 sep = "X") %>%
-        mutate_if(is.character, str_trim))
+set_data_df <- bind_cols(set_number, set_data) %>%
+  split(f = .$set_number)
 
 df_list <- vector(mode = "list",
                   length = length(workout_titles))
@@ -136,11 +121,7 @@ for (i in 1:length(workout_titles)) {
                              workout_titles[[i]], 
                              workout_number[[i]],
                              workout_exercises[[i]], 
-                             workout_set1[[i]],
-                             workout_set2[[i]],
-                             workout_set3[[i]],
-                             workout_set4[[i]],
-                             workout_set5[[i]])
+                             set_data_df[[i]])
 }
 
 output_data <- df_list %>%
