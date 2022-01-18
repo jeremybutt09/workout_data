@@ -98,6 +98,7 @@ set_data_df <- vector(mode = "list", length = length(workout_content))
 set_1_index <- vector(mode = "list", length = length(workout_content))
 
 for (i in 1:length(workout_content)) {
+
     set_data_df[[i]] <- bind_cols(set_number[[i]], set_data[[i]]) %>%
       transmute(workout_date = NA,
                 workout_titles = NA,
@@ -110,6 +111,17 @@ for (i in 1:length(workout_content)) {
                sep = "X")
     
     set_1_index[[i]] <- which(set_data_df[[i]]$set_number == "SET 1")
+  
+    #print(set_data_df)
+    #print(set_1_index)
+    print(length(set_1_index[[i]]))
+  for(j in 1:length(set_1_index[[i]])) {
+    #print(i)
+    #print(j)
+    #print(set_1_index[j]) 
+    #print(workout_exercises[[i]][j])
+    set_data_df[set_1_index[j], 4] <- workout_exercises[[i]][j]
+  }
 }
 set_data_df
 #THIS IS AN INDEX FOR THE ROWS THAT CONTAIN SET 1. THE INDEX CAPTURES WHEN A NEW EXERCISE BEGAN AND WILL BE USED
