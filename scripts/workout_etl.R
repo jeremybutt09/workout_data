@@ -110,8 +110,51 @@ set_data <- workout_content %>%
         mutate_if(is.character, str_trim))
 
 
+#set_data_df <- bind_cols(set_number, set_data) %>%
+#  split(f = .$set_number)
+
 set_data_df <- bind_cols(set_number, set_data) %>%
-  split(f = .$set_number)
+  transmute(workout_exercises = NA,
+            set_number,
+            set_data) %>%
+  separate(col = set_data,
+           into = c("weight", "reps"),
+           sep = "X")
+
+set_1_index <- which(set_data_df$set_number == "SET 1")
+
+workout_exercises <- workout_content %>%
+  map(~str_extract_all(string = .x,
+                       pattern = "(?<=EXERCISE [[:digit:]]{1}\\.?[[:digit:]]?:[[:space:]]{0,5}).+") %>%
+        unlist(.) %>%
+        str_trim(.))
+
+workout_exercises <- workout_exercises[[1]]
+
+#mapply(function(x) set_data_df[x, 1] <- workout_exercises,
+#       x = set_1_index)
+
+#set_data_df[1,1] <- workout_exercises[1]
+#set_data_df[4,1] <- workout_exercises[2]
+
+set_data_df <- set_data_df %>%
+  fill(workout_exercises, .direction = "down")
+
+set_data_df
+
+set_data_list <- vector(mode = "list",
+                        length = length(set_1_index))
+index_val <- 1
+
+for (i in 1:length(set_1_index)) {
+  set_data_df[set_1_index[i], 1] <- workout_exercises[i]
+}
+
+set_data_df <- set_data_df %>%
+  fill(workout_exercises, .direction = "down")
+
+set_data_list[[1]]
+set_1_index[1]
 
 #NOT WORKING BECAUSE ONLY A SINGLE ROW FOR SET 4 BUT 2 EXERCISES. CODE CREATES A NEW ROW FOR SET 4 WHICH IS NOT CORRECT
 test <- set_data_df %>%
