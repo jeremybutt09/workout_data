@@ -46,46 +46,29 @@ workout_date <- workout_content %>%
   map(~str_extract(string = .x,
                    pattern = "(?<=DATE:[[:space:]]{0,5})[[:digit:]]{4}-[[:digit:]]{2}-[[:digit:]]{2}") %>%
         unlist() %>%
-        str_trim(.) %>%
-        data.frame() %>%
-        rename(.data = .,
-               workout_date = .) %>%
-        mutate_if(is.character, str_trim))
+        str_trim(.))
 
 #EXTRACT TITLES FROM NOTES
 workout_titles <- workout_content %>%
   map(~str_extract(string = .x,
                    pattern = ".+") %>%
-        str_trim(.) %>%
-        data.frame() %>%
-        rename(.data = .,
-               work_titles = .) %>%
-        mutate_if(is.character, str_trim))
+        str_trim(.))
 
 #EXTRACT EXERCISE NUMBERS FROM NOTES
 workout_number <- workout_content %>%
   map(~str_extract_all(string = .x,
                        pattern = "EXERCISE [[:digit:]]{1}\\.?[[:digit:]]?(?=:)") %>%
         unlist(.) %>%
-        str_trim(.) %>%
-        data.frame() %>%
-        rename(.data = .,
-               exercise_number = .) %>%
-        mutate(exercise_number = str_remove_all(string = exercise_number,
-                                                pattern = "[[:alpha:]]")) %>%
-        mutate_if(is.character, str_trim))
-  
+        str_remove_all(string = .,
+                       pattern = "[[:alpha:]]") %>%
+        str_trim())
 
 #EXTRACT EXERCISE NAMES FROM NOTES
 workout_exercises <- workout_content %>%
   map(~str_extract_all(string = .x,
                        pattern = "(?<=EXERCISE [[:digit:]]{1}\\.?[[:digit:]]?:[[:space:]]{0,5}).+") %>%
         unlist(.) %>%
-        str_trim(.) %>%
-        data.frame() %>%
-        rename(.data = .,
-               exercise_name = .) %>%
-        mutate_if(is.character, str_trim))
+        str_trim(.))
 
 #EXTRACT SET NUMBERS FROM NOTES
 set_number <- workout_content %>%
@@ -112,7 +95,10 @@ set_data <- workout_content %>%
 #CREATING A DATAFRAME THAT WILL CONTAIN WORKOUT EXERCISE AKA NAME OF EXERCISES IN WORKOUT, WITH THE NUMBER OF SETS
 #COMPLETE AND THE WEIGHTS CORRESPONDING TO THE SETS
 set_data_df <- bind_cols(set_number, set_data) %>%
-  transmute(workout_exercises = NA,
+  transmute(workout_date = NA,
+            workout_titles = NA,
+            exercise_number = NA,
+            workout_exercises = NA,
             set_number,
             set_data) %>%
   separate(col = set_data,
