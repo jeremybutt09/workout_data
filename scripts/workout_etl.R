@@ -109,10 +109,8 @@ set_data <- workout_content %>%
                set_data = .) %>%
         mutate_if(is.character, str_trim))
 
-
-#set_data_df <- bind_cols(set_number, set_data) %>%
-#  split(f = .$set_number)
-
+#CREATING A DATAFRAME THAT WILL CONTAIN WORKOUT EXERCISE AKA NAME OF EXERCISES IN WORKOUT, WITH THE NUMBER OF SETS
+#COMPLETE AND THE WEIGHTS CORRESPONDING TO THE SETS
 set_data_df <- bind_cols(set_number, set_data) %>%
   transmute(workout_exercises = NA,
             set_number,
@@ -121,6 +119,8 @@ set_data_df <- bind_cols(set_number, set_data) %>%
            into = c("weight", "reps"),
            sep = "X")
 
+#THIS IS AN INDEX FOR THE ROWS THAT CONTAIN SET 1. THE INDEX CAPTURES WHEN A NEW EXERCISE BEGAN AND WILL BE USED
+#IN THE NEXT STEP TO ASSIGN EXERCISES TO THE APPROPRIATE SETS, REPS AND WEIGHT
 set_1_index <- which(set_data_df$set_number == "SET 1")
 
 workout_exercises <- workout_content %>%
@@ -131,21 +131,6 @@ workout_exercises <- workout_content %>%
 
 workout_exercises <- workout_exercises[[1]]
 
-#mapply(function(x) set_data_df[x, 1] <- workout_exercises,
-#       x = set_1_index)
-
-#set_data_df[1,1] <- workout_exercises[1]
-#set_data_df[4,1] <- workout_exercises[2]
-
-set_data_df <- set_data_df %>%
-  fill(workout_exercises, .direction = "down")
-
-set_data_df
-
-set_data_list <- vector(mode = "list",
-                        length = length(set_1_index))
-index_val <- 1
-
 for (i in 1:length(set_1_index)) {
   set_data_df[set_1_index[i], 1] <- workout_exercises[i]
 }
@@ -153,8 +138,7 @@ for (i in 1:length(set_1_index)) {
 set_data_df <- set_data_df %>%
   fill(workout_exercises, .direction = "down")
 
-set_data_list[[1]]
-set_1_index[1]
+set_data_df
 
 #NOT WORKING BECAUSE ONLY A SINGLE ROW FOR SET 4 BUT 2 EXERCISES. CODE CREATES A NEW ROW FOR SET 4 WHICH IS NOT CORRECT
 test <- set_data_df %>%
