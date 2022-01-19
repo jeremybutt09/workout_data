@@ -112,19 +112,17 @@ for (i in 1:length(workout_content)) {
     
     set_1_index[[i]] <- which(set_data_df[[i]]$set_number == "SET 1")
   
-    #print(set_data_df)
-    #print(set_1_index)
-    #print(length(set_1_index[[i]]))
+
   for(j in 1:length(set_1_index[[i]])) {
-    print(paste("Value of i is ", i))
-    print(paste("Value of j is ", j))
-    print(paste("set 1 index for list", i, "at position", j, "is", set_1_index[[i]][j]))
-    print(workout_exercises[[i]])
-    print(glimpse(set_data_df[[i]]))
-    #set_data_df[set_1_index[[i]][j], 4] <- workout_exercises[[i]][j]
-  }
+    
+    set_data_df[[i]][set_1_index[[i]][j], 4] <- workout_exercises[[i]][j]
+  
+    }
 }
+
 set_data_df
+
+#set_data_df
 #THIS IS AN INDEX FOR THE ROWS THAT CONTAIN SET 1. THE INDEX CAPTURES WHEN A NEW EXERCISE BEGAN AND WILL BE USED
 #IN THE NEXT STEP TO ASSIGN EXERCISES TO THE APPROPRIATE SETS, REPS AND WEIGHT
 #set_1_index <- which(set_data_df$set_number == "SET 1")
