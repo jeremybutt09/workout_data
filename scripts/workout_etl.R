@@ -30,16 +30,10 @@ workout_files <- list.files(workout_data_folder,
                             full.names = TRUE,
                             pattern = "_current")
 
-#FOR DEV WILL REMOVE PRIOR TO MERGING
-workout_files <- "C:/Users/Jeremy/Documents/workout_data/data/set_extract_dev.txt"
-
 #READING THE FILES INTO R. AGAIN SHOULD LIKE WHAT IS BEING BROUGHT IN
 workout_content <- lapply(X = workout_files,
                           FUN = read_file) %>%
   map(str_to_upper)
-
-#IDEA IS TO BRING ALL ATTRIBUTES INTO R IN THEIR OWN SEPERATE VARIABLE THEN FROM THERE CAN MAKE A DATA FRAME FROM ALL THE 
-#INDIVIDUAL VARIABLE
 
 #EXTRACT DATE FROM NOTE
 workout_date <- workout_content %>%
@@ -100,82 +94,38 @@ set_1_index <- vector(mode = "list", length = length(workout_content))
 for (i in 1:length(workout_content)) {
 
     set_data_df[[i]] <- bind_cols(set_number[[i]], set_data[[i]]) %>%
-      transmute(workout_date = NA,
-                workout_titles = NA,
+      transmute(workout_date = workout_date[[i]],
+                workout_titles = workout_titles[[i]],
                 exercise_number = NA,
                 workout_exercises = NA,
                 set_number,
                 set_data) %>%
       separate(col = set_data,
                into = c("weight", "reps"),
-               sep = "X")
+               sep = "X",
+               convert = TRUE)
     
     set_1_index[[i]] <- which(set_data_df[[i]]$set_number == "SET 1")
   
 
   for(j in 1:length(set_1_index[[i]])) {
     
+    set_data_df[[i]][set_1_index[[i]][j], 3] <- workout_number[[i]][j]
     set_data_df[[i]][set_1_index[[i]][j], 4] <- workout_exercises[[i]][j]
-  
+    
     }
+  
+  set_data_df[[i]] <- set_data_df[[i]] %>%
+    fill(exercise_number,
+         workout_exercises) %>%
+    mutate(volume = weight*reps,
+           set_number = str_extract(string = set_number,
+                                    pattern = "[[:number:]]+"))
+
 }
 
-set_data_df
 
-#set_data_df
-#THIS IS AN INDEX FOR THE ROWS THAT CONTAIN SET 1. THE INDEX CAPTURES WHEN A NEW EXERCISE BEGAN AND WILL BE USED
-#IN THE NEXT STEP TO ASSIGN EXERCISES TO THE APPROPRIATE SETS, REPS AND WEIGHT
-#set_1_index <- which(set_data_df$set_number == "SET 1")
-
-#workout_exercises <- workout_exercises[[1]]
-
-for (i in 1:length(set_1_index)) {
-  set_data_df[set_1_index[i], 1] <- workout_exercises[i]
-}
-
-set_data_df <- set_data_df %>%
-  fill(workout_exercises, .direction = "down")
-
-set_data_df
-
-#NOT WORKING BECAUSE ONLY A SINGLE ROW FOR SET 4 BUT 2 EXERCISES. CODE CREATES A NEW ROW FOR SET 4 WHICH IS NOT CORRECT
-test <- set_data_df %>%
-  map(~bind_cols(.x, workout_exercises))
-
-#IDEA: CAN LOOK TO REPLICATE THE OTHER VECTORS TO THE NUMBER OF SETS IN THE set_data_df AND THEN BIND ROWS
-#CAN ALSO LOOK TO UPDATE VALUES IN DATAFRAME ON EVERY nth OCCURENCE OF SET 1.
-#CAN ALSO LOOP AND EXTRACT ALL SETS BUT I THINK THIS IS THE SAME AS THE SPLIT
-
-test
-
-df_list <- vector(mode = "list",
-                  length = length(workout_titles))
-
-for (i in 1:length(workout_titles)) {
-  df_list[[i]] <- data.frame(workout_date[[i]], 
-                             workout_titles[[i]], 
-                             workout_number[[i]],
-                             workout_exercises[[i]], 
-                             set_data_df[[i]])
-}
-
-output_data <- df_list %>%
-  map(~pivot_longer(data = .x,
-                    cols = starts_with("set"),
-                    names_to = "set_info",
-                    values_to = "value") %>%
-        separate(col = set_info,
-                 sep = "_(?=[[:alpha:]])",
-                 into = c("set", "description")) %>%
-        mutate(set = str_extract(string = set,
-                                 pattern = "[[:digit:]]+")) %>%
-        pivot_wider(names_from = description,
-                    values_from = value) %>%
-        mutate(volume = as.numeric(weight) * as.numeric(reps)) %>%
-        mutate_all(as.character)) %>%
-  bind_rows() %>%
-  filter(weight != 0,
-         reps != 0)
+output_data <- bind_rows(set_data_df)
 
 #APPEND DATA TO CSV
 write_csv(x = output_data,
