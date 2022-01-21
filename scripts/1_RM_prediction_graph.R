@@ -1,9 +1,9 @@
 library(tidyverse)
 library(lubridate)
 
-wo_data_url <- "C:/Users/Jeremy/Documents/workout_data/data/workout_output.csv"
-ref_data_url <- "C:/Users/Jeremy/Documents/workout_data/reference/muscle_ref.csv"
-rm_pred_url <- "C:/Users/Jeremy/Documents/workout_data/reference/1_RM_PREDICTION.csv"
+wo_data_url <- "data/workout_output.csv"
+ref_data_url <- "reference/muscle_ref.csv"
+rm_pred_url <- "reference/1_RM_PREDICTION.csv"
 
 wo_data <- read_csv(file = wo_data_url) %>%
   mutate(reps_factor = factor(x = as.character(reps),
