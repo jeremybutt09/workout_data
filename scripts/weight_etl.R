@@ -14,29 +14,44 @@ library(lubridate)
 #FILES FOR WEIGHT DATA. 
 
 #WEIGHT DATA HISTORIC
-weight_data_file_hist <- "data/Renpho-Jeremy Butt.csv"
+#weight_data_file_hist <- "data/Renpho-Jeremy Butt.csv"
 
 #NEWLY IMPORTED DATA.
-weight_data_file_current_file <- "/Users/jeremybutt/Downloads/Renpho-Jeremy Butt.csv"
+#weight_data_file_current_file <- "/Users/jeremybutt/Downloads/Renpho-Jeremy Butt.csv"
 
-test <- list("data/Renpho-Jeremy Butt.csv",
-             "/Users/jeremybutt/Downloads/Renpho-Jeremy Butt.csv")
+files <- list("data/Renpho-Jeremy Butt.csv",
+              "/Users/jeremybutt/Downloads/Renpho-Jeremy Butt.csv")
 
-#READING HISTORIC DATA INTO R
-weight_data_hist <- read_csv(weight_data_file_hist) %>%
-  rename_with(str_to_lower) %>%
-  rename_with(~ str_replace_all(.x,
-                               pattern = "%",
-                               replacement = "percent")) %>%
-  rename_with(~ str_replace_all(.x,
-                                pattern = "[[:punct:]]",
-                                replacement = " ")) %>%
-  rename_with(str_trim) %>%
-  rename_with(~ str_replace_all(.x,
-                              pattern = "[[:space:]]",
-                              replacement = "_"))
+weight_data_list <- lapply(X = files,
+                           FUN = read_csv,
+                           col_types = cols(`Time of Measurement` = col_character(),
+                                            `Weight(lb)` = col_double(),
+                                            BMI = col_double(),
+                                            `Body Fat(%)` = col_double(),
+                                            `Fat-free Body Weight(lb)` = col_double(),
+                                            `Subcutaneous Fat(%)` = col_double(),
+                                            `Visceral Fat` = col_double(),
+                                            `Body Water(%)` = col_double(),
+                                            `Skeletal Muscle(%)` = col_double(),
+                                            `Muscle Mass(lb)` = col_double(),
+                                            `Bone Mass(lb)` = col_double(),
+                                            `Protein(%)` = col_double(),
+                                            `BMR(kcal)` = col_double(),
+                                            `Metabolic Age` = col_double(),
+                                            Remarks = col_character())) %>%
+  map(~ .x %>%
+        rename_with(str_to_lower) %>%
+        rename_with(~ str_replace_all(.x,
+                                      pattern = "%",
+                                      replacement = "percent")) %>%
+        rename_with(~ str_replace_all(.x,
+                                      pattern = "[[:punct:]]",
+                                      replacement = " ")) %>%
+        rename_with(str_trim) %>%
+        rename_with(~ str_replace_all(.x,
+                                      pattern = "[[:space:]]",
+                                      replacement = "_")))
 
-names(weight_data_hist)
 
 #READING NEW DATA INTO R
 weight_data_file_current <- read_csv(weight_data_file_current_file) %>%
