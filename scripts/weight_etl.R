@@ -50,21 +50,15 @@ weight_data_list <- lapply(X = files,
         rename_with(str_trim) %>%
         rename_with(~ str_replace_all(.x,
                                       pattern = "[[:space:]]",
-                                      replacement = "_")))
+                                      replacement = "_")) %>%
+        rename(date_time = time_of_measurement) %>%
+        mutate(date_time = mdy_hms(date_time),
+               date = as_date(date_time)))
 
+weight_data_list[[3]] <- weight_data_list[[2]] %>% #NEW WEIGHT DATA IMPORTED
+  anti_join(weight_data_list[[1]], by = "date_time") #REMOVING DUPLICATE DATA
 
-#READING NEW DATA INTO R
-weight_data_file_current <- read_csv(weight_data_file_current_file) %>%
-  anti_join(weight_data_hist, by = "Time of Measurement") #REMOVING DUPLICATE DATA
+weight_data <- bind_rows(weight_data_list[[1]], weight_data_list[[3]])
 
-weight_data <- weight_data_hist %>%
-  bind_rows(weight_data_file_current)
-
-weight_data <- weight_data %>%
-  mutate(date = mdy_hms(time_of_measurement))
-
-
-glimpse(weight_data)
-
-
-plot(x = weight_data$date, y = weight_data$weight_lb)
+write_csv(x = weight_data,
+          file = files[[1]])
