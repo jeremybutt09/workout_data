@@ -62,3 +62,5 @@ weight_data <- bind_rows(weight_data_list[[1]], weight_data_list[[3]])
 
 write_csv(x = weight_data,
           file = files[[1]])
+
+file.remove(file = files[[2]])
