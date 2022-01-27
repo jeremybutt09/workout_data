@@ -19,7 +19,7 @@ library(lubridate)
 #NEWLY IMPORTED DATA.
 #weight_data_file_current_file <- "/Users/jeremybutt/Downloads/Renpho-Jeremy Butt.csv"
 
-files <- list("data/Renpho-Jeremy Butt.csv",
+files <- list("data/weight_data.csv",
               "/Users/jeremybutt/Downloads/Renpho-Jeremy Butt.csv")
 
 weight_data_list <- lapply(X = files,
