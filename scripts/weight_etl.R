@@ -59,13 +59,13 @@ weight_data_list[[2]] <- weight_data_list[[2]] %>%
         mutate(date_time = mdy_hms(date_time),
                date = as_date(date_time))
 
-weight_data_list[[3]] <- weight_data_list[[2]] %>% #NEW WEIGHT DATA IMPORTED
-  anti_join(weight_data_list[[1]], by = "date") #REMOVING DUPLICATE DATA
+weight_data <- weight_data_list[[2]] %>% #NEW WEIGHT DATA IMPORTED
+  anti_join(weight_data_list[[1]], by = "date") %>% #REMOVING DUPLICATE DATA
+  arrange(date)
 
-weight_data <- bind_rows(weight_data_list[[1]], weight_data_list[[3]]) %>%
-  arrange(date_time)
 
 write_csv(x = weight_data,
-          file = files[[1]])
+          file = files[[1]],
+          append = TRUE)
 
 file.remove(file = files[[2]])
