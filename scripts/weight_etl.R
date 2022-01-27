@@ -38,8 +38,9 @@ weight_data_list <- lapply(X = files,
                                             col_double(),
                                             col_double(),
                                             col_double(),
-                                            col_character())) %>%
-  map(~ .x %>%
+                                            col_character()))
+
+weight_data_list[[2]] <- weight_data_list[[2]] %>%
         rename_with(str_to_lower) %>%
         rename_with(~ str_replace_all(.x,
                                       pattern = "%",
@@ -53,7 +54,7 @@ weight_data_list <- lapply(X = files,
                                       replacement = "_")) %>%
         rename(date_time = time_of_measurement) %>%
         mutate(date_time = mdy_hms(date_time),
-               date = as_date(date_time)))
+               date = as_date(date_time))
 
 weight_data_list[[3]] <- weight_data_list[[2]] %>% #NEW WEIGHT DATA IMPORTED
   anti_join(weight_data_list[[1]], by = "date_time") #REMOVING DUPLICATE DATA
