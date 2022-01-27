@@ -60,9 +60,10 @@ weight_data_list[[2]] <- weight_data_list[[2]] %>%
                date = as_date(date_time))
 
 weight_data_list[[3]] <- weight_data_list[[2]] %>% #NEW WEIGHT DATA IMPORTED
-  anti_join(weight_data_list[[1]], by = "date_time") #REMOVING DUPLICATE DATA
+  anti_join(weight_data_list[[1]], by = "date") #REMOVING DUPLICATE DATA
 
-weight_data <- bind_rows(weight_data_list[[1]], weight_data_list[[3]])
+weight_data <- bind_rows(weight_data_list[[1]], weight_data_list[[3]]) %>%
+  arrange(date_time)
 
 write_csv(x = weight_data,
           file = files[[1]])
