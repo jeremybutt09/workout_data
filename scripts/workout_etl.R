@@ -126,7 +126,7 @@ output_data <- bind_rows(set_data_df)
 
 #APPEND DATA TO CSV
 write_csv(x = output_data,
-          path = output_file,
+          file = output_file,
           append = TRUE)
 
 #REMOVING WORKOUT FILES. FILES HAVE BEEN PROCESSED THERE IS NO NEED TO KEEP OVER FILES.
