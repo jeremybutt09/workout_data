@@ -40,6 +40,9 @@ weight_data_list <- lapply(X = files,
                                             col_double(),
                                             col_character()))
 
+weight_data_list[[1]] <- weight_data_list[[1]] %>%
+  mutate(date_time = as_date(date_time))
+
 weight_data_list[[2]] <- weight_data_list[[2]] %>%
         rename_with(str_to_lower) %>%
         rename_with(~ str_replace_all(.x,
