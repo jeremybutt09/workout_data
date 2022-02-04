@@ -122,7 +122,8 @@ for (i in 1:length(workout_content)) {
 }
 
 
-output_data <- bind_rows(set_data_df)
+output_data <- bind_rows(set_data_df) %>%
+  arrange(workout_date)
 
 #APPEND DATA TO CSV
 write_csv(x = output_data,
