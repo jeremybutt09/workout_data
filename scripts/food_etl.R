@@ -2,9 +2,21 @@
 library(tidyverse)
 library(lubridate)
 
+#FILE VARIABLE
+
+#WHEN EXPORT FROM NETDIARY THIS IS THE FILE
 net_diary_file <- "C:/Users/Jeremy/Downloads/MyNetDiary_Year_2022.xls"
 
-food_data <- readxl::read_xls(net_diary_file) %>%
+#NAME OF THE OUTPUT FILE WHERE DATA WILL BE APPENDED
+output_file <- "data/food_data.csv"
+
+#READING HISTORIC FOOD DATA INTO R. THIS WILL BE USED TO IDENTIFY NEW DATA AND
+#AVOID DUPLICATION OF DATA
+food_data <- read_csv(output_file)
+
+#READING NEW FOOD ENTRIES INTO R. RUNNING SOME FUNCTIONS TO CLEAN UP THE COLUMN
+#NAMES
+food_data_new <- readxl::read_xls(net_diary_file) %>%
   rename_with(str_to_lower) %>%
   rename_with(~ str_replace_all(.x,
                                 pattern = "%",
@@ -20,4 +32,12 @@ food_data <- readxl::read_xls(net_diary_file) %>%
                                 replacement = "_")) %>%
   rename_with(str_trim)
 
-glimpse(food_data)
+#COMPLETING AN ANTI-JOIN TO RETURN ONLY ENTRIES THAT DO NOT CURRENTLY EXIST IN
+#THE HISTORIC DATA
+food_data_import <- food_data %>%
+  anti_join(food_data_new, by = "date_time")
+
+#APPENDING DATA TO THE OUTPUT FILE
+write_csv(x = food_data_import,
+          file = output_file,
+          append = TRUE)
