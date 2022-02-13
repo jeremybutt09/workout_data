@@ -9,13 +9,6 @@ library(tidyverse)
 library(lubridate)
 
 #FILES FOR WEIGHT DATA. 
-
-#WEIGHT DATA HISTORIC
-#weight_data_file_hist <- "data/Renpho-Jeremy Butt.csv"
-
-#NEWLY IMPORTED DATA.
-#weight_data_file_current_file <- "/Users/jeremybutt/Downloads/Renpho-Jeremy Butt.csv"
-
 files <- list("data/weight_data.csv",
               "/Users/jeremybutt/Downloads/Renpho-Jeremy Butt.csv")
 
