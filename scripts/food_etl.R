@@ -34,10 +34,13 @@ food_data_new <- readxl::read_xls(net_diary_file) %>%
 
 #COMPLETING AN ANTI-JOIN TO RETURN ONLY ENTRIES THAT DO NOT CURRENTLY EXIST IN
 #THE HISTORIC DATA
-food_data_import <- food_data %>%
-  anti_join(food_data_new, by = "date_time")
+food_data_import <- food_data_new %>%
+  anti_join(food_data, by = "date_time")
 
 #APPENDING DATA TO THE OUTPUT FILE
 write_csv(x = food_data_import,
           file = output_file,
           append = TRUE)
+
+#REMOVE FILE
+file.remove(net_diary_file)
