@@ -1,0 +1,54 @@
+#TABLEAU CONTROL CHART DEVELOPMENT
+
+When calculating UL need formula is MAX(Weight) + 2.66*WINDOW_AVG(moving_range_new) but on table calculation need
+set edit table calculation to specific dimensions, at the level Date restarting every stage. Restarting stage 
+is the most important part
+
+Calculations for signals 
+IF 
+Sum([Chosen Stat])>(WINDOW_AVG(Sum([Chosen Stat]))+3*(WINDOW_AVG([Moving Range]))/1.128) 
+THEN 'Outlier' 
+ELSEIF 
+Sum([Chosen Stat])<(WINDOW_AVG(Sum([Chosen Stat]))-3*(WINDOW_AVG([Moving Range]))/1.128) 
+THEN 'Outlier' 
+ELSEIF 
+Sum([Chosen Stat])>LOOKUP(Sum([Chosen Stat]),-1) AND 
+LOOKUP(Sum([Chosen Stat]),-1)>LOOKUP(Sum([Chosen Stat]),-2) AND 
+LOOKUP(Sum([Chosen Stat]),-2)>LOOKUP(Sum([Chosen Stat]),-3) AND 
+LOOKUP(Sum([Chosen Stat]),-3)>LOOKUP(Sum([Chosen Stat]),-4) AND 
+LOOKUP(Sum([Chosen Stat]),-4)>LOOKUP(Sum([Chosen Stat]),-5) AND
+LOOKUP(Sum([Chosen Stat]),-5)>LOOKUP(Sum([Chosen Stat]),-6)
+THEN 'Trend' 
+ELSEIF 
+Sum([Chosen Stat])<LOOKUP(Sum([Chosen Stat]),-1) AND 
+LOOKUP(Sum([Chosen Stat]),-1)<LOOKUP(Sum([Chosen Stat]),-2) AND 
+LOOKUP(Sum([Chosen Stat]),-2)<LOOKUP(Sum([Chosen Stat]),-3) AND 
+LOOKUP(Sum([Chosen Stat]),-3)<LOOKUP(Sum([Chosen Stat]),-4) AND 
+LOOKUP(Sum([Chosen Stat]),-4)<LOOKUP(Sum([Chosen Stat]),-5) AND
+LOOKUP(Sum([Chosen Stat]),-5)<LOOKUP(Sum([Chosen Stat]),-6)
+THEN 'Trend' 
+
+ELSEIF 
+Sum([Chosen Stat])>WINDOW_AVG(Sum([Chosen Stat])) AND 
+LOOKUP(Sum([Chosen Stat]),-1)>WINDOW_AVG(Sum([Chosen Stat])) AND 
+LOOKUP(Sum([Chosen Stat]),-2)>WINDOW_AVG(Sum([Chosen Stat])) AND 
+LOOKUP(Sum([Chosen Stat]),-3)>WINDOW_AVG(Sum([Chosen Stat])) AND 
+LOOKUP(Sum([Chosen Stat]),-4)>WINDOW_AVG(Sum([Chosen Stat])) AND 
+LOOKUP(Sum([Chosen Stat]),-5)>WINDOW_AVG(Sum([Chosen Stat])) AND 
+LOOKUP(Sum([Chosen Stat]),-6)>WINDOW_AVG(Sum([Chosen Stat])) AND 
+LOOKUP(Sum([Chosen Stat]),-7)>WINDOW_AVG(Sum([Chosen Stat])) AND 
+LOOKUP(Sum([Chosen Stat]),-8)>WINDOW_AVG(Sum([Chosen Stat])) 
+THEN 'Shift' 
+ELSEIF 
+Sum([Chosen Stat])<WINDOW_AVG(Sum([Chosen Stat])) AND 
+LOOKUP(Sum([Chosen Stat]),-1)<WINDOW_AVG(Sum([Chosen Stat])) AND 
+LOOKUP(Sum([Chosen Stat]),-2)<WINDOW_AVG(Sum([Chosen Stat])) AND 
+LOOKUP(Sum([Chosen Stat]),-3)<WINDOW_AVG(Sum([Chosen Stat])) AND 
+LOOKUP(Sum([Chosen Stat]),-4)<WINDOW_AVG(Sum([Chosen Stat])) AND 
+LOOKUP(Sum([Chosen Stat]),-5)<WINDOW_AVG(Sum([Chosen Stat])) AND 
+LOOKUP(Sum([Chosen Stat]),-6)<WINDOW_AVG(Sum([Chosen Stat])) AND 
+LOOKUP(Sum([Chosen Stat]),-7)<WINDOW_AVG(Sum([Chosen Stat])) AND 
+LOOKUP(Sum([Chosen Stat]),-8)<WINDOW_AVG(Sum([Chosen Stat])) 
+THEN 'Shift' 
+ELSE 'In Range' 
+END
